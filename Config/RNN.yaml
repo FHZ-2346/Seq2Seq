@@ -1,0 +1,19 @@
+train:
+  lr: 0.005
+  num_epochs: 500
+  save_freq: 100
+
+  data:
+    batch_size: 64
+    num_steps: 10
+
+network:
+  encoder: RNN
+  decoder: RNN # RNN, Attention
+  embed_size: 32
+  dH: 32
+  n_layer : 2
+  dropout: 0.1
+
+evaluate:
+  load_epoch: 300

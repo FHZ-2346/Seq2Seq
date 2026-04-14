@@ -1,0 +1,5 @@
+dataset: fra-eng/fra.txt
+num_examples: 600
+min_freq: 2
+# src_vocab_size: 184
+# tgt_vocab_size: 201

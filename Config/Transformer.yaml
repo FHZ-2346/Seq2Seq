@@ -1,0 +1,35 @@
+data:
+  num_examples: 600
+  min_freq: 2
+  src:
+    vocab_size:
+  tgt:
+    vocab_size:
+
+train:
+  lr: 0.005
+  num_epochs: 500
+  save_freq: 100
+
+  data:
+    batch_size: 64
+    num_steps: 10
+
+network:
+  encoder: Transformer
+  decoder: Transformer
+  dH: 32
+  n_blk : 2
+  dropout: 0.1
+
+  MultiHeadAttention:
+    n_head: 4
+  
+  AddNorm:
+    norm_shape: [32]
+  
+  PositionWiseFFN:
+    dH: 64
+
+evaluate:
+  load_epoch: 300
