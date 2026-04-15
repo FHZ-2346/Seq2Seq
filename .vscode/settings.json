@@ -4,5 +4,6 @@
     "python.analysis.extraPaths": ["${workspaceFolder}/src"],
     "files.exclude": {
         "**/__pycache__": true
-    }
+    },
+    "explorer.autoReveal": false
 }

@@ -3,6 +3,7 @@ import torch.nn as nn
 
 
 class PositionWiseFFN(nn.Module):
+
     def __init__(self, dI, dH, dO):
         super().__init__()
         self.net = nn.Sequential(
@@ -16,6 +17,7 @@ class PositionWiseFFN(nn.Module):
 
 
 class AddNorm(nn.Module):
+
     def __init__(self, normalized_shape, dropout, **kwargs):
         super(AddNorm, self).__init__(**kwargs)
         self.dropout = nn.Dropout(dropout)

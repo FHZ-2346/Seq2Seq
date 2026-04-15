@@ -24,6 +24,7 @@ network:
 
   MultiHeadAttention:
     n_head: 4
+    use_bias: False
   
   AddNorm:
     norm_shape: [32]

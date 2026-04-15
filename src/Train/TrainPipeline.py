@@ -1,9 +1,7 @@
 import torch
-from torch import device, nn
 from tqdm import tqdm
 
-from Network.EncDec import EncoderDecoder
-from Network.EncDec_dict import enc_dict, dec_dict
+from Network.EncDec_dict import EncDec_dict
 from Train.Utils import grad_clipping, xavier_init_weights
 from Train.Loss import MaskedSoftmaxCELoss
 from Utils.Auxiliary import Timer, Accumulator
@@ -16,9 +14,8 @@ class TrainPipeline:
         self.src_vocab = src_vocab
         self.tgt_vocab = tgt_vocab
 
-        encoder = enc_dict[cfg.network.encoder](len(src_vocab), cfg.network)
-        decoder = dec_dict[cfg.network.decoder](len(tgt_vocab), cfg.network)
-        self.net = EncoderDecoder(encoder, decoder)
+        encdec_name = f"{cfg.network.encoder}+{cfg.network.decoder}"
+        self.net = EncDec_dict[encdec_name](len(src_vocab), len(tgt_vocab), cfg.network)
         self.net.apply(xavier_init_weights)
         self.net.to(device)
 
@@ -30,12 +27,17 @@ class TrainPipeline:
     def train_epoch(self, train_iter):
         for batch in train_iter:
             src, src_vl, tgt, tgt_vl = [x.to(self.device) for x in batch]
+            # src:    (batch_size, num_steps)
+            # src_vl: (batch_size)
+            # tgt:    (batch_size, num_steps)
+            # tgt_vl: (batch_size)
             batch_size = src.shape[0]
             bos = self.tgt_vocab["<bos>"]
             bos = torch.tensor([bos] * batch_size, device=self.device).reshape(-1, 1)
             tgt_with_bos = torch.cat([bos, tgt[:, :-1]], dim=1)
-            tgt_hat = self.net(encI=(src, src_vl), decI=tgt_with_bos)
-
+            # (batch_size, num_steps)
+            tgt_hat = self.net(src, src_vl, tgt_with_bos)
+            # (batch_size, num_steps, tgt_vs)
             self.optimizer.zero_grad()
             l = self.loss(tgt_hat, tgt, tgt_vl)
             l.sum().backward()

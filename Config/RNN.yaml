@@ -9,7 +9,8 @@ train:
 
 network:
   encoder: RNN
-  decoder: RNN # RNN, Attention
+  decoder: RNN
+  attention: true # true, false
   embed_size: 32
   dH: 32
   n_layer : 2

@@ -10,13 +10,21 @@ def truncate_pad(line, num_steps, padding_token):
     return line + [padding_token] * (num_steps - len(line))  # 填充
 
 
+def process_src(src_sentence, src_vocab, num_steps, device):
+    src = src_vocab[src_sentence.lower().split(" ")] + [src_vocab["<eos>"]]
+    src_valid_len = torch.tensor([len(src)], device=device)
+    src = truncate_pad(src, num_steps, src_vocab["<pad>"])
+    src = torch.unsqueeze(torch.tensor(src, dtype=torch.long, device=device), dim=0)
+    return src, src_valid_len
+
+
 def predict_seq2seq(net, src_sentence:str, src_vocab:Vocab, tgt_vocab:Vocab, num_steps, device, save_attention_weights=False):
     net.eval()
     src_tokens = src_vocab[src_sentence.lower().split(" ")] + [src_vocab["<eos>"]]
     enc_valid_len = torch.tensor([len(src_tokens)], device=device)
     src_tokens = truncate_pad(src_tokens, num_steps, src_vocab["<pad>"])
     enc_X = torch.unsqueeze(torch.tensor(src_tokens, dtype=torch.long, device=device), dim=0)
-    enc_outputs = net.encoder(enc_X, enc_valid_len)
+    encHs, encS = net.encoder(enc_X, enc_valid_len)
     dec_state = [enc_outputs, enc_valid_len]
     dec_X = torch.unsqueeze(torch.tensor([tgt_vocab["<bos>"]], dtype=torch.long, device=device), dim=0)
     output_seq, attention_weight_seq = [], []

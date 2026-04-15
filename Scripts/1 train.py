@@ -7,7 +7,11 @@ from Train.TrainPipeline import TrainPipeline
 from Config import cfgG
 
 
-@hydra.main(config_path=f"{cfgG.wsf}/Config", config_name="RNN")
+@hydra.main(
+    config_path=f"{cfgG.wsf}/Config",
+    config_name="RNN",  # Transformer, RNN
+    version_base=None,
+)
 def main(cfg: DictConfig):
     data_iter, src_vocab, tgt_vocab = load_data_nmt(cfg.train.data)
     train_pip = TrainPipeline(cfg, src_vocab, tgt_vocab, try_gpu())

@@ -10,6 +10,7 @@
             "request": "launch",
             // "program": "${file}",
             "program": "${workspaceFolder}/Scripts/1 train.py",
+            // "program": "${workspaceFolder}/Scripts/2 evaluate.py",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
             "env": {
